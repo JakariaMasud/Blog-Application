@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.blogapplication.views.HomeFragment"
+        android:label="Home" >
+        <action
+            android:id="@+id/action_homeFragment_to_blogDetailFragment"
+            app:destination="@id/blogDetailFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_addUpdateFragment"
+            app:destination="@id/addUpdateFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/blogDetailFragment"
+        android:name="com.example.blogapplication.views.BlogDetailFragment"
+        android:label="Blog Detail" >
+        <argument
+            android:name="item_id"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_blogDetailFragment_to_addUpdateFragment"
+            app:destination="@id/addUpdateFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addUpdateFragment"
+        android:name="com.example.blogapplication.views.AddUpdateFragment"
+        android:label="Blog"
+        tools:layout="@layout/fragment_add_update" >
+        <argument
+            android:name="item_id"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_addUpdateFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+</navigation>

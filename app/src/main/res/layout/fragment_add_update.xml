@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:context=".views.AddUpdateFragment">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/titleTF"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Blog Title"
+            app:boxCornerRadiusTopEnd="2dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <com.google.android.material.textfield.TextInputEditText
+                android:inputType="text"
+                android:layout_width="match_parent"
+                android:id="@+id/titleET"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/descriptionTF"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Blog Description"
+            app:boxCornerRadiusTopEnd="2dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:inputType="textMultiLine"
+                android:layout_width="match_parent"
+                android:id="@+id/blogdesET"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/categoryTV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="12dp"
+            android:textSize="17dp"
+            android:drawablePadding="16dp"
+            android:drawableRight="@drawable/arrow_down"
+            android:hint="Select Category"/>
+
+        <Button
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="7dp"
+            android:id="@+id/add_updateBTN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|end"
+            android:text="Add Blog"
+            android:textAllCaps="false" />
+
+
+    </LinearLayout>
+</layout>
