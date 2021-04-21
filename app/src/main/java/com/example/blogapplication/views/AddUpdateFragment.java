@@ -12,6 +12,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,16 +23,21 @@ import com.example.blogapplication.R;
 import com.example.blogapplication.databinding.FragmentAddUpdateBinding;
 import com.example.blogapplication.models.Author;
 import com.example.blogapplication.models.Blog;
+import com.example.blogapplication.models.Result;
 import com.example.blogapplication.viewModels.BlogViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public class AddUpdateFragment extends Fragment {
     FragmentAddUpdateBinding binding;
     boolean [] selectedCategory;
-    List<Integer> categoryList=new ArrayList<Integer>();
+    Set<Integer> categorySet=new LinkedHashSet<>();
     String[] category={"Business","Entertainment","Productivity","Music","Cooking","Sports","Fitness","Lifestyle"};
     List<String>selectedList=new ArrayList<>();
     BlogViewModel blogViewModel;
@@ -99,12 +105,41 @@ public class AddUpdateFragment extends Fragment {
             for(int j=0;j<selectedBlog.getCategories().size();j++){
                 if(category[i].equals(selectedBlog.getCategories().get(j))){
                     selectedCategory[i]=true;
+                    categorySet.add(i);
+
                 }
             }
         }
     }
 
     private void settingUpListener() {
+        blogViewModel.insertProcessLiveData().observe(getViewLifecycleOwner(), new Observer<Result>() {
+            @Override
+            public void onChanged(Result result) {
+              if(result!=null){
+                  if(result==Result.Success){
+                      Toast.makeText(getContext(), "Blog is added Successfully", Toast.LENGTH_SHORT).show();
+                      navController.navigate(R.id.action_addUpdateFragment_to_homeFragment);
+                  }else{
+                      Toast.makeText(getContext(), "Failed in inserting Blog", Toast.LENGTH_SHORT).show();
+                  }
+              }
+            }
+        });
+        blogViewModel.updateProcessLiveData().observe(getViewLifecycleOwner(), new Observer<Result>() {
+            @Override
+            public void onChanged(Result result) {
+                if(result!=null){
+                    if(result==Result.Success){
+                        Toast.makeText(getContext(), "Blog is Updated Successfully", Toast.LENGTH_SHORT).show();
+                        navController.navigate(R.id.action_addUpdateFragment_to_homeFragment);
+                    }else{
+                        Toast.makeText(getContext(), "Failed in updating Blog", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            }
+        });
         binding.addUpdateBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,12 +152,12 @@ public class AddUpdateFragment extends Fragment {
                    if(buttonText.equals(Constants.ADD_BUTTON_TEXT)){
                       //add blog
                        blogViewModel.insertBlog(new Blog(0,title,description,Constants.BLOG_COVER1,selectedList,author));
-                       navController.navigate(R.id.action_addUpdateFragment_to_homeFragment);
+
 
                    }else{
                      //update
                        blogViewModel.updateBlog(new Blog(selectedBlog.getId(),title,description,selectedBlog.getCover_photo(),selectedList,author));
-                       navController.navigate(R.id.action_addUpdateFragment_to_homeFragment);
+
                    }
                }
                }
@@ -164,10 +199,10 @@ public class AddUpdateFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                         if(isChecked){
-                            categoryList.add(which);
-                            Collections.sort(categoryList);
+                            categorySet.add(which);
+
                         }else{
-                            categoryList.remove(which);
+                            categorySet.remove(which);
                         }
                     }
                 });
@@ -176,14 +211,19 @@ public class AddUpdateFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         StringBuilder stringBuilder=new StringBuilder();
                         selectedList.clear();
-                        for (int i=0;i<categoryList.size();i++){
-                            selectedList.add(category[categoryList.get(i)]);
-                            stringBuilder.append(category[categoryList.get(i)]);
-                            if(i!=categoryList.size()-1){
-                                stringBuilder.append(" , ");
-                            }
+                       for(Integer i:categorySet){
+                           selectedList.add(category[i]);
+                           //no built in way for getting the last item of set
+                           // as i want to concat a comma after each item except the last one
+                           //so it needs another loop to construct the string for textview
 
-                        }
+                      }
+                       for(int i=0;i<selectedList.size();i++){
+                           stringBuilder.append(selectedList.get(i));
+                           if(i!=selectedList.size()-1){
+                               stringBuilder.append(" , ") ;
+                           }
+                       }
                         binding.categoryTV.setText(stringBuilder.toString());
                     }
                 });

@@ -13,10 +13,8 @@ import com.example.blogapplication.models.Blog;
 import com.example.blogapplication.models.Blogs;
 import com.example.blogapplication.models.Result;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Completable;
@@ -26,7 +24,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.GET;
+
 
 public class BlogRepository {
     BlogApi blogApi;
@@ -34,6 +32,7 @@ public class BlogRepository {
     SharedPreferences preferences;
 
     SingleLiveEvent<Result>updateProcessLiveData=new SingleLiveEvent<>();
+    SingleLiveEvent<Result>insertProcessLiveData=new SingleLiveEvent<>();
     MutableLiveData<Blog>getBlog=new MutableLiveData<>();
 
 
@@ -43,6 +42,14 @@ public class BlogRepository {
         this.blogDao=blogDao;
         this.preferences=preferences;
         init();
+    }
+
+    public LiveData<Result> getUpdateProcessLiveData() {
+        return updateProcessLiveData;
+    }
+
+    public LiveData<Result> getInsertProcessLiveData() {
+        return insertProcessLiveData;
     }
 
     public LiveData<List<Blog>> getBlogList() {
@@ -88,6 +95,7 @@ public class BlogRepository {
                 blogDao.insertBlog(blog);
             }
         };
+        boolean hasData = preferences.contains(Constants.DATA_LOAD_KEY);
         Completable.fromRunnable(runnable)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -99,11 +107,18 @@ public class BlogRepository {
 
                     @Override
                     public void onComplete() {
-                        Log.e("info","item inserted");
+                        if(hasData){
+                            Log.e("info","item inserted");
+                            insertProcessLiveData.postValue(Result.Success);
+                        }
+
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
+                        if (hasData){
+                            insertProcessLiveData.postValue(Result.Failure);
+                        }
 
                     }
                 });
@@ -128,11 +143,12 @@ public class BlogRepository {
                     @Override
                     public void onComplete() {
                         Log.e("info","item updated");
+                        updateProcessLiveData.postValue(Result.Success);
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
-
+                        updateProcessLiveData.postValue(Result.Failure);
                     }
                 });
     }

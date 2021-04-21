@@ -3,6 +3,7 @@ package com.example.blogapplication.viewModels;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import com.example.blogapplication.models.Blog;
+import com.example.blogapplication.models.Result;
 import com.example.blogapplication.repositories.BlogRepository;
 import java.util.List;
 import javax.inject.Inject;
@@ -32,5 +33,11 @@ public class BlogViewModel extends ViewModel {
         repository.getBlogById(id);
     }
 
+    public LiveData<Result>updateProcessLiveData(){
+        return repository.getUpdateProcessLiveData();
+    }
+    public LiveData<Result>insertProcessLiveData(){
+        return repository.getInsertProcessLiveData();
+    }
 
 }

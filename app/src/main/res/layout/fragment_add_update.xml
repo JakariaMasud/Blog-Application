@@ -17,7 +17,7 @@
             app:boxCornerRadiusTopEnd="2dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
             <com.google.android.material.textfield.TextInputEditText
-                android:inputType="text"
+                android:inputType="textMultiLine"
                 android:layout_width="match_parent"
                 android:id="@+id/titleET"
                 android:layout_height="wrap_content"
